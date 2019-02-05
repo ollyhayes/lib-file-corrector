@@ -1,28 +1,30 @@
 import * as vscode from 'vscode';
 
+let disposable: vscode.Disposable;
+
 export function activate(context: vscode.ExtensionContext) {
-	const disposable = vscode.window.onDidChangeActiveTextEditor(async textEditor => 
+	const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
+
+	disposable = vscode.window.onDidChangeActiveTextEditor(async textEditor => 
 	{
-		if (textEditor) {
-			const editors = vscode.window.visibleTextEditors.map(editor => editor.document.fileName);
-			console.log(`Document opened: ${textEditor.document.fileName}, Editors: ${editors}`);
+		if (textEditor && libFolderFinder.test(textEditor.document.uri.path)) {
+			// close the newly opening incorrect 'lib' version of the file
+			await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
 
-	 		const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
+			// find and open the correct version
+			const srcPath = textEditor.document.uri.path.replace(libFolderFinder, "packages/$1/src/$2");
+			await vscode.window.showTextDocument(vscode.Uri.file(srcPath));
 
-			if (libFolderFinder.test(textEditor.document.uri.path)) {
-				const srcPath = textEditor.document.uri.path.replace(libFolderFinder, "packages/$1/src/$2");
-
-				await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
-
-				// next open the correct one
-				vscode.window.showTextDocument(vscode.Uri.file(srcPath));
-
-				// the wrong one will still be present in recent editors though and will show up still in searches and stuff, maybe there's a way to remove that?
-			}
-
+			// todo:
+			// handle the new file not being found (open the old one again?)
+			// the wrong one will still be present in recent editors list and will show up still in searches and stuff, maybe there's a way to remove that?
+			// find a way of putting the cursor in correct place (using find text maybe)
 		}
 	});
-
 }
 
-export function deactivate() {}
+export function deactivate() {
+	if (disposable) {
+		disposable.dispose();
+	}
+}
