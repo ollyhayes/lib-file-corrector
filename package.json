@@ -1,6 +1,6 @@
 {
-	"name": "package-definitions",
-	"displayName": "package-definitions",
+	"name": "lib-file-corrector",
+	"displayName": "lib-file-corrector",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
