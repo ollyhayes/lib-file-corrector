@@ -14,11 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
 			const editors = vscode.window.visibleTextEditors.map(editor => editor.document.fileName);
 			console.log(`Document opened: ${textEditor.document.fileName}, Editors: ${editors}`);
 
-			if (textEditor.document.fileName === "c:\\Users\\ohayes\\tools\\lerna-test\\packages\\library\\src\\library.js") {
+	 		const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
+
+			if (libFolderFinder.test(textEditor.document.uri.path)) {
+				const srcPath = textEditor.document.uri.path.replace(libFolderFinder, "packages/$1/src/$2");
+
 				await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
 
 				// next open the correct one
-				vscode.window.showTextDocument()
+				vscode.window.showTextDocument(vscode.Uri.file(srcPath));
 
 				// the wrong one will still be present in recent editors though and will show up still in searches and stuff, maybe there's a way to remove that?
 			}
@@ -27,50 +31,50 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	console.log('Congratulations, your extension "package-definitions" is now active!');
-	 let providerActive = false;
+	//  let providerActive = false;
 
-	const provider = vscode.languages.registerDefinitionProvider('javascript', {
-		async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
+	// const provider = vscode.languages.registerDefinitionProvider('javascript', {
+	// 	async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 
-			if (providerActive) {
-				return null;
-			}
+	// 		if (providerActive) {
+	// 			return null;
+	// 		}
 			
-			providerActive = true;
-			console.log("definition provider invoked!");
+	// 		providerActive = true;
+	// 		console.log("definition provider invoked!");
 
-			const definitionLocations = await vscode.commands.executeCommand<vscode.Location[]>('vscode.executeDefinitionProvider', document.uri, position);
+	// 		const definitionLocations = await vscode.commands.executeCommand<vscode.Location[]>('vscode.executeDefinitionProvider', document.uri, position);
 
-			if (!definitionLocations || definitionLocations.length === 0) {
-				return null;
-			}
+	// 		if (!definitionLocations || definitionLocations.length === 0) {
+	// 			return null;
+	// 		}
 
-			const location = definitionLocations[0];
-			const locationPath = location.uri.path;
+	// 		const location = definitionLocations[0];
+	// 		const locationPath = location.uri.path;
 
-			const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
+	// 		const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
 
-			if (libFolderFinder.test(locationPath)) {
-				const scrPath = locationPath.replace(libFolderFinder, "packages/$1/src/$2");
+	// 		if (libFolderFinder.test(locationPath)) {
+	// 			const scrPath = locationPath.replace(libFolderFinder, "packages/$1/src/$2");
 
-				const newUri = vscode.Uri.file(scrPath);
+	// 			const newUri = vscode.Uri.file(scrPath);
 				
-				providerActive = false;
+	// 			providerActive = false;
 
-				return [
-					{
-						range: location.range,
-						uri: newUri
-					}
-				];
-			}
+	// 			return [
+	// 				{
+	// 					range: location.range,
+	// 					uri: newUri
+	// 				}
+	// 			];
+	// 		}
 
-			providerActive = false;
-			return definitionLocations;
-		}
-	})
+	// 		providerActive = false;
+	// 		return definitionLocations;
+	// 	}
+	// })
 
-	context.subscriptions.push(provider);
+	// context.subscriptions.push(provider);
 
 	//vscode.window.showInformationMessage('Hello World!');
 
