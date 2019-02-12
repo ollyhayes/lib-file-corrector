@@ -13,7 +13,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// find and open the correct version
 			const srcPath = textEditor.document.uri.path.replace(libFolderFinder, "packages/$1/src/$2");
-			await vscode.window.showTextDocument(vscode.Uri.file(srcPath));
+
+			console.log(`Opening ${srcPath}...`);
+
+			try
+			{
+				await vscode.window.showTextDocument(vscode.Uri.file(srcPath));
+			}
+			catch (error)
+			{
+				console.log(`Error opening ${srcPath}: ${error}`);
+				throw error;
+			}
 
 			// todo:
 			// handle the new file not being found (open the old one again?)
