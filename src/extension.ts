@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
+import {basename} from 'path';
 
 let disposable: vscode.Disposable;
 
 export function activate(context: vscode.ExtensionContext) {
 	const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
 
-	disposable = vscode.window.onDidChangeActiveTextEditor(async textEditor => 
-	{
+	disposable = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
 		if (textEditor && libFolderFinder.test(textEditor.document.uri.path)) {
 			// close the newly opening incorrect 'lib' version of the file
 			await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
@@ -14,16 +14,11 @@ export function activate(context: vscode.ExtensionContext) {
 			// find and open the correct version
 			const srcPath = textEditor.document.uri.path.replace(libFolderFinder, "packages/$1/src/$2");
 
-			console.log(`Opening ${srcPath}...`);
-
-			try
-			{
+			try {
+				vscode.window.setStatusBarMessage(`Redirecting to src/${basename(srcPath)}`, 3000);
 				await vscode.window.showTextDocument(vscode.Uri.file(srcPath));
-			}
-			catch (error)
-			{
-				console.log(`Error opening ${srcPath}: ${error}`);
-				throw error;
+			} catch (error) {
+				vscode.window.showErrorMessage(`Error opening ${srcPath}: ${error}`);
 			}
 
 			// todo:
@@ -35,7 +30,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-	if (disposable) {
+	if (disposable)
 		disposable.dispose();
-	}
 }
