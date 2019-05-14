@@ -17,6 +17,22 @@
 	"activationEvents": [
 		"*"
 	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "lib-file-corrector.disableOnce",
+				"title": "Disable lib/src redirection once"
+			},
+			{
+				"command": "lib-file-corrector.enable",
+				"title": "Enable lib/src redirection"
+			},
+			{
+				"command": "lib-file-corrector.disable",
+				"title": "Disable lib/src redirection"
+			}
+		]
+	},
 	"main": "./out/extension.js",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
