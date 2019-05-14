@@ -1,12 +1,12 @@
 {
-	"name": "lib-file-corrector",
-	"displayName": "lib-file-corrector",
+	"name": "lib-src-redirect",
+	"displayName": "lib-src-redirect",
     "publisher": "ollyhayes",
 	"description": "",
-	"version": "0.0.4",
+	"version": "0.1.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ollyhayes/lib-file-corrector.git"
+		"url": "https://github.com/ollyhayes/lib-src-redirect.git"
 	},
 	"engines": {
 		"vscode": "^1.30.0"
@@ -20,15 +20,15 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "lib-file-corrector.disableOnce",
+				"command": "lib-src-redirect.disableOnce",
 				"title": "Disable lib/src redirection once"
 			},
 			{
-				"command": "lib-file-corrector.enable",
+				"command": "lib-src-redirect.enable",
 				"title": "Enable lib/src redirection"
 			},
 			{
-				"command": "lib-file-corrector.disable",
+				"command": "lib-src-redirect.disable",
 				"title": "Disable lib/src redirection"
 			}
 		]

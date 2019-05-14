@@ -8,9 +8,9 @@ const libFolderFinder = /packages\/([^\/]*)\/lib\/(.*)/;
 const disableableRedirect = makeDisableable(redirect);
 
 const stateCommands: [string, () => {}][] = [
-	['lib-file-corrector.disableOnce', disableableRedirect.disableOnce],
-	['lib-file-corrector.disable', disableableRedirect.disable],
-	['lib-file-corrector.enable', disableableRedirect.enable]
+	['lib-src-redirect.disableOnce', disableableRedirect.disableOnce],
+	['lib-src-redirect.disable', disableableRedirect.disable],
+	['lib-src-redirect.enable', disableableRedirect.enable]
 ];
 
 export function activate(context: vscode.ExtensionContext) {
